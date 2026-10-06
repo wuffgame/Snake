@@ -12,6 +12,14 @@ player_y = 0
 player_vel_x = 0
 player_vel_y = 0
 
+falling_object = pygame.surface.Surface((50, 50))
+falling_object.fill((255, 255, 255))
+
+falling_object_x = 0
+falling_object_y = 0
+falling_object_vel_x = 0
+falling_object_vel_y = -.3
+
 while True:
     #input
     for event in pygame.event.get():
@@ -22,6 +30,7 @@ while True:
     window.fill((0, 0, 0))
 
     window.blit(player, (player_x, player_y))
+    window.blit(falling_object, (falling_object_x, falling_object_y))
 
     pygame.display.flip()
 
