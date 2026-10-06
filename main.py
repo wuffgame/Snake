@@ -19,7 +19,9 @@ while True:
             quit(0)
 
     #output
-    window.fill((255, 255, 255))
+    window.fill((0, 0, 0))
+
+    window.blit(player, (player_x, player_y))
 
     pygame.display.flip()
 
