@@ -7,8 +7,8 @@ pygame.display.set_caption("Randomize snake")
 
 player = pygame.surface.Surface((100, 100))
 player.fill((255, 255, 255))
-player = pygame.image.load("img/snake_front.bmp").convert_alpha()
-player = pygame.transform.scale(player, (100, 100))
+player = pygame.image.load("img/snake_front.png").convert_alpha()
+player = pygame.transform.scale(player, (40, 40))
 
 player_x = 0
 player_y = 0
@@ -17,6 +17,8 @@ player_vel_y = 0
 
 falling_object = pygame.surface.Surface((50, 50))
 falling_object.fill((255, 255, 255))
+falling_object = pygame.image.load("img/orange.png").convert_alpha()
+falling_object = pygame.transform.scale(falling_object, (30, 30))
 
 falling_object_x = 0
 falling_object_y = 0
