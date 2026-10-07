@@ -30,11 +30,29 @@ while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             quit(0)
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_LEFT:
+                player_vel_x = -0.2
+                player_vel_y = 0
+            if event.key == pygame.K_RIGHT:
+                player_vel_x = 0.2
+                player_vel_y = 0
+            if event.key == pygame.K_DOWN:
+                player_vel_y = 0.2
+                player_vel_x = 0
+            if event.key == pygame.K_UP:
+                player_vel_y = -0.2
+                player_vel_x = 0
+
 
     #output
     window.fill((0, 0, 0))
 
+    player_x += player_vel_x
+    player_y += player_vel_y
     window.blit(player, (player_x, player_y))
+    falling_object_x += falling_object_vel_x
+    falling_object_y += falling_object_y
     window.blit(falling_object, (falling_object_x, falling_object_y))
 
     pygame.display.flip()
