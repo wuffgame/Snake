@@ -1,9 +1,11 @@
 import pygame
 
 pygame.init()
-window = pygame.display.set_mode((800, 600))
+window = pygame.display.set_mode((800, 800))
 window.fill((0, 0, 0))
 pygame.display.set_caption("Randomize snake")
+
+background_map = pygame.image.load("img/map.png").convert()
 
 player = pygame.surface.Surface((100, 100))
 player.fill((255, 255, 255))
@@ -48,6 +50,7 @@ while True:
     #output
     window.fill((0, 0, 0))
 
+    window.blit(background_map, (0, 0))
     player_x += player_vel_x
     player_y += player_vel_y
     window.blit(player, (player_x, player_y))
