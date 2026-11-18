@@ -45,6 +45,7 @@ while True:
                 dx = 0
                 dy = grid_size
 
+# window border
     if player_x < 0:
         player_x = 0
     elif player_x >= 800:
@@ -54,6 +55,21 @@ while True:
         player_y = 0
     elif player_y >= 800:
         player_y = 800 - grid_size
+
+# end game
+    if player_x < 32:
+        print("end")
+        quit(0)
+    elif player_x >= 768:
+        print("end")
+        quit(0)
+
+    if player_y < 32:
+        print("end")
+        quit(0)
+    elif player_y >= 768:
+        print("end")
+        quit(0)
 
 
     #output
