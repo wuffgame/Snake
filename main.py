@@ -1,3 +1,4 @@
+import random
 import pygame
 
 pygame.init()
@@ -18,6 +19,16 @@ player_y = 384
 dx = grid_size
 dy = 0
 
+eat_object = pygame.image.load("img/orange.png").convert_alpha()
+eat_object = pygame.transform.scale(eat_object, (grid_size, grid_size))
+
+def spawn_food():
+    x = random.randint(1, 23) * grid_size
+    y = random.randint(1, 23) * grid_size
+    return x, y
+eat_object_x, eat_object_y = spawn_food()
+
+
 move_event = pygame.USEREVENT + 1
 pygame.time.set_timer(move_event, 150)
 
@@ -31,6 +42,12 @@ while True:
         if event.type == move_event:
             player_x += dx
             player_y += dy
+
+            if player_x == eat_object_x and player_y == eat_object_y:
+                print("EAT EAT EAT!!!")
+                eat_object_x, eat_object_y = spawn_food()
+
+
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
                 dx = -grid_size
@@ -88,6 +105,7 @@ while True:
     window.fill((0, 0, 0))
 
     window.blit(background_map, (0, 0))
+    window.blit(eat_object, (eat_object_x, eat_object_y))
     window.blit(player, (player_x, player_y))
 
     pygame.display.flip()
