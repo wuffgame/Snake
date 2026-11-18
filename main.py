@@ -3,7 +3,7 @@ import pygame
 pygame.init()
 window = pygame.display.set_mode((800, 800))
 window.fill((0, 0, 0))
-pygame.display.set_caption("Randomize snake")
+pygame.display.set_caption("Snake")
 
 background_map = pygame.image.load("img/map.png").convert()
 
@@ -42,6 +42,18 @@ while True:
                 dx = 0
                 dy = -grid_size
             if event.key == pygame.K_DOWN:
+                dx = 0
+                dy = grid_size
+            if event.key == pygame.K_a:
+                dx = -grid_size
+                dy = 0
+            if event.key == pygame.K_d:
+                dx = grid_size
+                dy = 0
+            if event.key == pygame.K_w:
+                dx = 0
+                dy = -grid_size
+            if event.key == pygame.K_s:
                 dx = 0
                 dy = grid_size
 
