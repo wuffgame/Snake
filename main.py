@@ -12,28 +12,48 @@ grid_size = 32
 player = pygame.image.load("img/snake_front.png").convert_alpha()
 player = pygame.transform.scale(player, (grid_size, grid_size))
 
-player_x = 0
-player_y = 0
+player_x = 384
+player_y = 384
 
-falling_object = pygame.surface.Surface((50, 50))
-falling_object.fill((255, 255, 255))
-falling_object = pygame.image.load("img/orange.png").convert_alpha()
-falling_object = pygame.transform.scale(falling_object, (30, 30))
+dx = grid_size
+dy = 0
+
+move_event = pygame.USEREVENT + 1
+pygame.time.set_timer(move_event, 150)
+
+clock = pygame.time.Clock()
 
 while True:
     #input
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             quit(0)
+        if event.type == move_event:
+            player_x += dx
+            player_y += dy
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
-                player_x -= grid_size
+                dx = -grid_size
+                dy = 0
             if event.key == pygame.K_RIGHT:
-                player_x += grid_size
+                dx = grid_size
+                dy = 0
             if event.key == pygame.K_UP:
-                player_y -= grid_size
+                dx = 0
+                dy = -grid_size
             if event.key == pygame.K_DOWN:
-                player_y += grid_size
+                dx = 0
+                dy = grid_size
+
+    if player_x < 0:
+        player_x = 0
+    elif player_x >= 800:
+        player_x = 800 - grid_size
+
+    if player_y < 0:
+        player_y = 0
+    elif player_y >= 800:
+        player_y = 800 - grid_size
 
 
     #output
@@ -43,4 +63,6 @@ while True:
     window.blit(player, (player_x, player_y))
 
     pygame.display.flip()
+
+    clock.tick(60)
 
