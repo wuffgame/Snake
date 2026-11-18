@@ -1,6 +1,10 @@
 import random
 import pygame
 
+
+block_x = False
+block_y = False
+
 pygame.init()
 window = pygame.display.set_mode((800, 800))
 window.fill((0, 0, 0))
@@ -16,7 +20,7 @@ player = pygame.transform.scale(player, (grid_size, grid_size))
 player_x = 384
 player_y = 384
 
-dx = grid_size
+dx = 0
 dy = 0
 
 eat_object = pygame.image.load("img/orange.png").convert_alpha()
@@ -49,30 +53,46 @@ while True:
 
 
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_LEFT:
+            if event.key == pygame.K_LEFT and block_x == False:
                 dx = -grid_size
                 dy = 0
-            if event.key == pygame.K_RIGHT:
+                block_x = True
+                block_y = False
+            if event.key == pygame.K_RIGHT and block_x == False:
                 dx = grid_size
                 dy = 0
-            if event.key == pygame.K_UP:
+                block_x = True
+                block_y = False
+            if event.key == pygame.K_UP and block_y == False:
                 dx = 0
                 dy = -grid_size
-            if event.key == pygame.K_DOWN:
+                block_x = False
+                block_y = True
+            if event.key == pygame.K_DOWN and block_y == False:
                 dx = 0
                 dy = grid_size
-            if event.key == pygame.K_a:
+                block_x = False
+                block_y = True
+            if event.key == pygame.K_a and block_x == False:
                 dx = -grid_size
                 dy = 0
-            if event.key == pygame.K_d:
+                block_x = True
+                block_y = False
+            if event.key == pygame.K_d and block_x == False:
                 dx = grid_size
                 dy = 0
-            if event.key == pygame.K_w:
+                block_x = True
+                block_y = False
+            if event.key == pygame.K_w and block_y == False:
                 dx = 0
                 dy = -grid_size
-            if event.key == pygame.K_s:
+                block_x = False
+                block_y = True
+            if event.key == pygame.K_s and block_y == False:
                 dx = 0
                 dy = grid_size
+                block_x = False
+                block_y = True
 
 # window border
     if player_x < 0:
