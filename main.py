@@ -17,8 +17,14 @@ grid_size = 32
 player = pygame.image.load("img/snake_front.png").convert_alpha()
 player = pygame.transform.scale(player, (grid_size, grid_size))
 
+body = pygame.image.load("img/snake_back.png").convert_alpha()
+body = pygame.transform.scale(body, (grid_size, grid_size))
+
 player_x = 384
 player_y = 384
+
+snake_body = [(player_x, player_y)]
+grow = False
 
 dx = 0
 dy = 0
@@ -44,11 +50,20 @@ while True:
         if event.type == pygame.QUIT:
             quit(0)
         if event.type == move_event:
-            player_x += dx
-            player_y += dy
+            if dx != 0 or dy != 0:
+                player_x += dx
+                player_y += dy
+
+                snake_body.insert(0, (player_x, player_y))
+
+                if grow:
+                    grow = False
+                else:
+                    snake_body.pop()
 
             if player_x == eat_object_x and player_y == eat_object_y:
                 ate_food += 1
+                grow = True
                 print(f"Ate food: {ate_food}")
                 eat_object_x, eat_object_y = spawn_food()
 
@@ -127,6 +142,8 @@ while True:
 
     window.blit(background_map, (0, 0))
     window.blit(eat_object, (eat_object_x, eat_object_y))
+    for segment_x, segment_y in snake_body[1:]:
+        window.blit(body, (segment_x, segment_y))
     window.blit(player, (player_x, player_y))
 
     pygame.display.flip()
