@@ -61,11 +61,15 @@ while True:
                 else:
                     snake_body.pop()
 
-            if player_x == eat_object_x and player_y == eat_object_y:
-                ate_food += 1
-                grow = True
-                print(f"Ate food: {ate_food}")
-                eat_object_x, eat_object_y = spawn_food()
+                if (player_x, player_y) in snake_body[1:]:
+                    print("Self collision :c")
+                    quit(0)
+
+                if player_x == eat_object_x and player_y == eat_object_y:
+                    ate_food += 1
+                    grow = True
+                    print(f"Ate food: {ate_food}")
+                    eat_object_x, eat_object_y = spawn_food()
 
 
         if event.type == pygame.KEYDOWN:
@@ -110,7 +114,7 @@ while True:
                 block_x = False
                 block_y = True
 
-# window border
+    #window border
     if player_x < 0:
         player_x = 0
     elif player_x >= 800:
@@ -121,7 +125,7 @@ while True:
     elif player_y >= 800:
         player_y = 800 - grid_size
 
-# end game
+    #end game
     if player_x < 32:
         print("end")
         quit(0)
