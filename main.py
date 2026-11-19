@@ -8,7 +8,9 @@ block_y = False
 pygame.init()
 window = pygame.display.set_mode((800, 800))
 window.fill((0, 0, 0))
-pygame.display.set_caption("Snake")
+pygame.display.set_caption("The most boring Snake")
+
+font = pygame.font.SysFont(None, 36)
 
 background_map = pygame.image.load("img/map.png").convert()
 
@@ -149,6 +151,10 @@ while True:
     for segment_x, segment_y in snake_body[1:]:
         window.blit(body, (segment_x, segment_y))
     window.blit(player, (player_x, player_y))
+
+    score_surface = font.render(str(ate_food), True, (255, 255, 255))
+    score_rect = score_surface.get_rect(topright=(768, 6))
+    window.blit(score_surface, score_rect)
 
     pygame.display.flip()
 
