@@ -1,7 +1,7 @@
 import random
 import pygame
 
-
+ate_food = 0
 block_x = False
 block_y = False
 
@@ -48,7 +48,8 @@ while True:
             player_y += dy
 
             if player_x == eat_object_x and player_y == eat_object_y:
-                print("EAT EAT EAT!!!")
+                ate_food += 1
+                print(f"Ate food: {ate_food}")
                 eat_object_x, eat_object_y = spawn_food()
 
 
