@@ -40,6 +40,8 @@ dy = 0
 eat_object = pygame.image.load("img/orange.png").convert_alpha()
 eat_object = pygame.transform.scale(eat_object, (grid_size, grid_size))
 
+retries = 0
+
 def set_head_angle(angle):
     global player
     player = pygame.transform.rotate(player_base, angle)
@@ -78,6 +80,8 @@ def end_screen(text, color):
                 quit(0)
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 if retry_btn.collidepoint(event.pos):
+                    global retries
+                    retries += 1
                     reset_vars()
                     return
                 if quit_btn.collidepoint(event.pos):
@@ -93,6 +97,10 @@ def end_screen(text, color):
         score_surface = font.render(str(ate_food), True, (255, 255, 255))
         score_rect = score_surface.get_rect(topright=(768, 6))
         window.blit(score_surface, score_rect)
+
+        retries_surface = font.render(f"Retries: {retries}", True, (255, 255, 255))
+        retries_rect = retries_surface.get_rect(topleft=(32, 6))
+        window.blit(retries_surface, retries_rect)
 
         overlay = pygame.Surface((800, 800), pygame.SRCALPHA)
         overlay.fill((0, 0, 0, 160))
@@ -198,17 +206,24 @@ while True:
         player_y = 800 - grid_size
 
     #end game
+    hit_border = False
     if player_x < 32:
-        end_screen("GAME OVER", (255, 70, 70))
-        continue
+        player_x = 32
+        hit_border = True
     elif player_x >= 768:
-        end_screen("GAME OVER", (255, 70, 70))
-        continue
+        player_x = 768 - grid_size
+        hit_border = True
 
     if player_y < 32:
-        end_screen("GAME OVER", (255, 70, 70))
-        continue
+        player_y = 32
+        hit_border = True
     elif player_y >= 768:
+        player_y = 768 - grid_size
+        hit_border = True
+
+    if hit_border:
+        if snake_body:
+            snake_body[0] = (player_x, player_y)
         end_screen("GAME OVER", (255, 70, 70))
         continue
 
@@ -232,9 +247,13 @@ while True:
     head_cx, head_cy = snake_body[0]
     window.blit(player, (lerp(head_px, head_cx, t), lerp(head_py, head_cy, t)))
 
-    score_surface = font.render(str(ate_food), True, (255, 255, 255))
+    score_surface = font.render(f"Points: {ate_food}", True, (255, 255, 255))
     score_rect = score_surface.get_rect(topright=(768, 6))
     window.blit(score_surface, score_rect)
+
+    retries_surface = font.render(f"Retries: {retries}", True, (255, 255, 255))
+    retries_rect = retries_surface.get_rect(topleft=(32, 6))
+    window.blit(retries_surface, retries_rect)
 
     pygame.display.flip()
 
