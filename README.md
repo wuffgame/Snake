@@ -4,9 +4,46 @@
 
 ![img](https://cdn.hackclub.com/01a1f650-9498-71eb-a6d0-69587a711c14/Zrzut%20ekranu_20261120_011609.png)
 
-This is the most boring Snake game in the world, to win, you have to collect 625 oranges.
+This is the most boring Snake game in the world. To win, you have to collect 625 oranges.
 
 Full (with assets) created by me (wuff), this is my first time (and last) using pygame.
+
+---
+
+## How to play
+
+### Requirements
+
+- Computer or Laptop or any other device that can have python
+- Any OS
+- python 3.10+
+- pygame library
+
+### Instruction step by step
+
+1. **Install Pygame:**
+
+Linux and Windows
+```
+pip install pygame
+```
+
+MacOS
+```
+pip3 install pygame
+```
+
+2. **Run the game** (in main folder)
+
+Windows:
+```
+python main.py
+```
+
+Linux/MacOS:
+```
+python3 main.py
+```
 
 ---
 
