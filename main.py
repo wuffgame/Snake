@@ -17,9 +17,11 @@ background_map = pygame.image.load("img/map.png").convert()
 
 grid_size = 32
 total_cells = 25 * 25
+move_delay = 150
 
-player = pygame.image.load("img/snake_front.png").convert_alpha()
-player = pygame.transform.scale(player, (grid_size, grid_size))
+player_base = pygame.image.load("img/snake_front.png").convert_alpha()
+player_base = pygame.transform.scale(player_base, (grid_size, grid_size))
+player = player_base.copy()
 
 body = pygame.image.load("img/snake_back.png").convert_alpha()
 body = pygame.transform.scale(body, (grid_size, grid_size))
@@ -28,6 +30,8 @@ player_x = 384
 player_y = 384
 
 snake_body = [(player_x, player_y)]
+prev_body = [(player_x, player_y)]
+last_move_time = pygame.time.get_ticks()
 grow = False
 
 dx = 0
@@ -36,22 +40,32 @@ dy = 0
 eat_object = pygame.image.load("img/orange.png").convert_alpha()
 eat_object = pygame.transform.scale(eat_object, (grid_size, grid_size))
 
+def set_head_angle(angle):
+    global player
+    player = pygame.transform.rotate(player_base, angle)
+
 def spawn_food():
     x = random.randint(1, 23) * grid_size
     y = random.randint(1, 23) * grid_size
     return x, y
 
+def lerp(a, b, t):
+    return a + (b - a) * t
+
 def reset_vars():
-    global ate_food, block_x, block_y, player_x, player_y, snake_body, grow, dx, dy, eat_object_x, eat_object_y
+    global ate_food, block_x, block_y, player_x, player_y, snake_body, prev_body, last_move_time, grow, dx, dy, eat_object_x, eat_object_y, player
     ate_food = 0
     block_x = False
     block_y = False
     player_x = 384
     player_y = 384
     snake_body = [(player_x, player_y)]
+    prev_body = [(player_x, player_y)]
+    last_move_time = pygame.time.get_ticks()
     grow = False
     dx = 0
     dy = 0
+    player = player_base.copy()
     eat_object_x, eat_object_y = spawn_food()
 
 def end_screen(text, color):
@@ -74,6 +88,7 @@ def end_screen(text, color):
         window.blit(eat_object, (eat_object_x, eat_object_y))
         for segment_x, segment_y in snake_body[1:]:
             window.blit(body, (segment_x, segment_y))
+        window.blit(player, (player_x, player_y))
 
         score_surface = font.render(str(ate_food), True, (255, 255, 255))
         score_rect = score_surface.get_rect(topright=(768, 6))
@@ -102,17 +117,22 @@ eat_object_x, eat_object_y = spawn_food()
 reset_vars()
 
 move_event = pygame.USEREVENT + 1
-pygame.time.set_timer(move_event, 150)
+pygame.time.set_timer(move_event, move_delay)
 
 clock = pygame.time.Clock()
 
 while True:
+    now = pygame.time.get_ticks()
+
     #input
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             quit(0)
         if event.type == move_event:
+            last_move_time = now
             if dx != 0 or dy != 0:
+                prev_body = list(snake_body)
+
                 player_x += dx
                 player_y += dy
 
@@ -120,8 +140,13 @@ while True:
 
                 if grow:
                     grow = False
+                    prev_body.append(prev_body[-1])
                 else:
                     snake_body.pop()
+
+                while len(prev_body) < len(snake_body):
+                    prev_body.append(prev_body[-1])
+                prev_body = prev_body[:len(snake_body)]
 
                 if (player_x, player_y) in snake_body[1:]:
                     end_screen("GAME OVER", (255, 70, 70))
@@ -135,48 +160,31 @@ while True:
                         continue
                     eat_object_x, eat_object_y = spawn_food()
 
-
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_LEFT and block_x == False:
+            if event.key in (pygame.K_LEFT, pygame.K_a) and block_x == False:
                 dx = -grid_size
                 dy = 0
                 block_x = True
                 block_y = False
-            if event.key == pygame.K_RIGHT and block_x == False:
+                set_head_angle(-90)
+            if event.key in (pygame.K_RIGHT, pygame.K_d) and block_x == False:
                 dx = grid_size
                 dy = 0
                 block_x = True
                 block_y = False
-            if event.key == pygame.K_UP and block_y == False:
+                set_head_angle(90)
+            if event.key in (pygame.K_UP, pygame.K_w) and block_y == False:
                 dx = 0
                 dy = -grid_size
                 block_x = False
                 block_y = True
-            if event.key == pygame.K_DOWN and block_y == False:
+                set_head_angle(180)
+            if event.key in (pygame.K_DOWN, pygame.K_s) and block_y == False:
                 dx = 0
                 dy = grid_size
                 block_x = False
                 block_y = True
-            if event.key == pygame.K_a and block_x == False:
-                dx = -grid_size
-                dy = 0
-                block_x = True
-                block_y = False
-            if event.key == pygame.K_d and block_x == False:
-                dx = grid_size
-                dy = 0
-                block_x = True
-                block_y = False
-            if event.key == pygame.K_w and block_y == False:
-                dx = 0
-                dy = -grid_size
-                block_x = False
-                block_y = True
-            if event.key == pygame.K_s and block_y == False:
-                dx = 0
-                dy = grid_size
-                block_x = False
-                block_y = True
+                set_head_angle(0)
 
     #window border
     if player_x < 0:
@@ -204,15 +212,25 @@ while True:
         end_screen("GAME OVER", (255, 70, 70))
         continue
 
+    if dx == 0 and dy == 0:
+        t = 1.0
+    else:
+        t = min(1.0, (now - last_move_time) / move_delay)
 
     #output
     window.fill((0, 0, 0))
 
     window.blit(background_map, (0, 0))
     window.blit(eat_object, (eat_object_x, eat_object_y))
-    for segment_x, segment_y in snake_body[1:]:
-        window.blit(body, (segment_x, segment_y))
-    window.blit(player, (player_x, player_y))
+
+    for i in range(1, len(snake_body)):
+        px, py = prev_body[i]
+        cx, cy = snake_body[i]
+        window.blit(body, (lerp(px, cx, t), lerp(py, cy, t)))
+
+    head_px, head_py = prev_body[0]
+    head_cx, head_cy = snake_body[0]
+    window.blit(player, (lerp(head_px, head_cx, t), lerp(head_py, head_cy, t)))
 
     score_surface = font.render(str(ate_food), True, (255, 255, 255))
     score_rect = score_surface.get_rect(topright=(768, 6))
@@ -221,4 +239,3 @@ while True:
     pygame.display.flip()
 
     clock.tick(60)
-
