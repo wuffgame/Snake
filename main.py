@@ -1,5 +1,17 @@
 import random
+import sys
+from pathlib import Path
 import pygame
+
+
+def resource_path(relative_path: str) -> str:
+    if hasattr(sys, "_MEIPASS"):
+        base_path = Path(sys._MEIPASS)
+    elif getattr(sys, "frozen", False):
+        base_path = Path(sys.executable).resolve().parent
+    else:
+        base_path = Path(__file__).resolve().parent
+    return str(base_path / relative_path)
 
 ate_food = 0
 block_x = False
@@ -13,17 +25,17 @@ pygame.display.set_caption("The most boring Snake")
 font = pygame.font.SysFont(None, 36)
 big_font = pygame.font.SysFont(None, 72)
 
-background_map = pygame.image.load("img/map.png").convert()
+background_map = pygame.image.load(resource_path("img/map.png")).convert()
 
 grid_size = 32
 total_cells = 25 * 25
 move_delay = 150
 
-player_base = pygame.image.load("img/snake_front.png").convert_alpha()
+player_base = pygame.image.load(resource_path("img/snake_front.png")).convert_alpha()
 player_base = pygame.transform.scale(player_base, (grid_size, grid_size))
 player = player_base.copy()
 
-body = pygame.image.load("img/snake_back.png").convert_alpha()
+body = pygame.image.load(resource_path("img/snake_back.png")).convert_alpha()
 body = pygame.transform.scale(body, (grid_size, grid_size))
 
 player_x = 384
@@ -37,7 +49,7 @@ grow = False
 dx = 0
 dy = 0
 
-eat_object = pygame.image.load("img/orange.png").convert_alpha()
+eat_object = pygame.image.load(resource_path("img/orange.png")).convert_alpha()
 eat_object = pygame.transform.scale(eat_object, (grid_size, grid_size))
 
 retries = 0
